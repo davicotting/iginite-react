@@ -19,10 +19,11 @@
     width: 100px;
     border: none;
     color: white;
-    border-radius: 9999px;
+    border-radius: 10px;
     cursor: pointer;
 
-    background-color: ${props => props.theme.secondary};
+    background-color: ${props => props.theme["green-300"]};
+    margin: 20px;
 
 
     /* ${props => {

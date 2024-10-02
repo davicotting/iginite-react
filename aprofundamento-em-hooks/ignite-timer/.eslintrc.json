@@ -1,0 +1,9 @@
+
+{
+  "extends": "@rocketseat/eslint-config/react",
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"]
+    }
+  ]
+}
