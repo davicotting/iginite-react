@@ -1,0 +1,21 @@
+    :root{
+        font-size: 62.5%;
+    }
+
+    .content {
+        padding: 3.2rem 16rem;
+        display: grid;
+        grid-template-columns: 25.6rem 1fr;
+        gap: 3.2rem;
+        align-items: flex-start;
+    }
+
+    @media screen and (max-width: 765px){
+        
+        .content{
+            grid-template-columns: 1fr;
+            padding: 3.2rem 2rem;
+        }
+    }
+
+    

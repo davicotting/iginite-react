@@ -1,0 +1,16 @@
+
+    .avatar{
+        height: 5rem;
+        width: 5rem;
+        padding: .3rem;
+        border-radius: .8rem;
+    }
+
+    .avatarWithBorder{
+        height: 5rem;
+        width: 5rem;
+        padding: .3rem;
+        border: 2px solid var(--green-500);
+        border-radius: .8rem;
+    }
+    

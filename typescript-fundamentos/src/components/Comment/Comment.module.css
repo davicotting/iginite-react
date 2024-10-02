@@ -1,0 +1,93 @@
+
+
+    .comment{
+        display: flex;
+        gap: 1.6rem;
+        width: 100%;
+        
+    }
+
+    .comment + .comment{
+        margin-top: 1.5rem;
+    }
+    
+    .avatar{
+        height: 5rem;
+        width: 5rem;
+        padding: .3rem;
+        border-radius: .8rem;
+
+    }
+
+    .commentBox{
+        background-color: var(--gray-box);
+        padding: 1.6rem;
+        border-radius: .8rem;
+        
+    }
+
+    .commentBoxContainer{
+        width: 100%;
+    }
+
+    .commentBox p{
+        color: var(--gray-200);
+    }
+
+    .commentBox header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    
+
+    .commentBoxContainer button{
+        background-color: transparent;
+        color: var(--gray-300);
+        font-size: 1.4rem;
+        font-weight: 700;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin-top: 1.4rem;
+        cursor: pointer;
+        transition: color .2s;
+    }
+
+    .commentBoxContainer button:hover{
+        color: var(--white);
+    }
+
+    .trash{
+        cursor: pointer;
+    }
+
+    .trash:hover{
+        color: var(--red);
+    }
+
+    .user{
+        display: flex;
+        gap: .8rem;
+        align-items: center;
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    .user strong{
+        color: var(--white);
+    }
+
+    .commentData time{
+        font-size: 1.2rem;
+        color: var(--gray-400);
+        
+    }
+
+    .commentData{
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
