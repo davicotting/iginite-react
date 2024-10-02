@@ -22,21 +22,21 @@
         }
          
         return(
-            <div className="flex items-start justify-between bg-gray_500 p-4 rounded-lg cursor-pointer">
-                <div className="flex gap-3 items-start w-full">
+            <div className="flex center justify-between bg-gray_500 p-4 rounded-lg cursor-pointer">
+                <div className="flex gap-3 items-center w-full">
                
 
-                <label className="relative cursor-pointer ">
+                <label className="relative cursor-pointer">
                 <input type="checkbox" onClick={changeTask} className="opacity-0 h-full w-full absolute"/>
 
                 <div className={
                 `cursor-pointer flex items-center justify-center h-5 w-5 rounded-full border-2 border-blue hover:bg-blue_dark hover:opacity-70 transition-all 
-                    ${isFinished=== true ? "bg-purple border-0" : ""}`} onClick={changeTask}>
+                    ${isFinished=== true ? "bg-purple border-purple" : ""}`} onClick={changeTask}>
                     {isFinished === true && <img src={checkIcon}/>}
                 </div>
                 </label>
             
-                <p className={`${isFinished == true ? "line-through text-gray_400": ""} `}>{content}</p>
+                <p className={`${isFinished == true ? "line-through text-gray_300": ""} `}>{content}</p>
                 </div>
                 
 

@@ -28,11 +28,27 @@ export function App(){
     }
    
     function handleNewTask(){
+        if(inputValue.trim() == ""){
+            alert("Esse campo é obrigatório!");
+            setInputValue("")
+            return
+        }
+
+        const isDuplicated = tasks.some(task => task.content === inputValue);
+
+        if(isDuplicated){
+            alert("Essa tarefa já foi criada!");
+            setInputValue("")
+            return
+        }
+
         const typedTask: TaskProps = {
             isFinished: false,
             content: inputValue,
         }
         setTasks((prevState) => [...prevState, typedTask]);
+
+        setInputValue("")
     }
 
     function handleTaskChangeChackValue(id: string){
@@ -42,6 +58,7 @@ export function App(){
         }
 
         return task;
+
     
     });
 
@@ -49,11 +66,12 @@ export function App(){
        
     }
 
-    
+    function handleEnterIsPressed(event: React.KeyboardEvent<HTMLInputElement>){
+        if(event.key === 'Enter'){
+            handleNewTask();
+        }
+    }
 
-    
-
-    console.log(tasks)
 
     return(
         <div className="bg-black w-full min-h-screen  font-inter bg-gray_600 text-white">
@@ -64,7 +82,9 @@ export function App(){
             <div className="flex flex-col items-center justify-center px-5 lg:px-[350px]">
             <Search
             confirmButton={handleNewTask}
+            value={inputValue}
             onChange={e => setInputValue(e.target.value)}
+            pressEnterToConfirm={handleEnterIsPressed}
             />
 
             <TasksContainer data={tasks} hasFinished={totalFinisehdTasks}/>

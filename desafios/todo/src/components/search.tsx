@@ -4,10 +4,11 @@ import { ComponentProps } from "react";
 
 interface InputType extends ComponentProps<"input">{
   confirmButton: () => void;
+  pressEnterToConfirm: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 
-export function Search({confirmButton, ...rest}: InputType) {
+export function Search({confirmButton, pressEnterToConfirm, ...rest}: InputType) {
   return (
     <header className="flex items-center gap-2 h-12 -mt-7 w-full">
       <input 
@@ -16,6 +17,7 @@ export function Search({confirmButton, ...rest}: InputType) {
       bg-gray_500 placeholder:text-gray_300
       p-4 text-base rounded-md outline-none" 
       placeholder="Adicione uma nova tarefa"
+      onKeyDown={pressEnterToConfirm}
       {...rest}
       />
 
