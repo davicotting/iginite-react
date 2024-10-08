@@ -17,6 +17,7 @@ body{
     background-color: ${props => props.theme["gray-900"]};
     color: ${props => props.theme["gray-300"]};
     min-height: 100vh;
+    
 }
 
 body, button, text-area, input{
