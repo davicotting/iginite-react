@@ -1,5 +1,5 @@
-    import { Play } from "phosphor-react"
-    import { CountDownContainer, FormContainer, HomeContainer, Separator, StartCountdownButton, TaskInput, MinutesAmountInput} from "./styles"
+    import { Play, HandPalm } from "phosphor-react"
+    import { CountDownContainer, FormContainer, HomeContainer, Separator, StartCountdownButton, TaskInput, MinutesAmountInput, InterruptCountdownButton} from "./styles"
     import { useForm } from "react-hook-form";
     import { zodResolver } from "@hookform/resolvers/zod";
     import * as zod from "zod";
@@ -13,6 +13,8 @@
             task: string;
             minutesAmount: number;
             startDate: Date;
+            interruptDate?: Date;
+            finishedDate?: Date;
         }
 
         const [cycles, setCycles] = useState<Cycle[]>([]);
@@ -28,7 +30,7 @@
 
         type newCycleFormType = zod.infer<typeof newCycleFormValidation>
 
-        const { register, handleSubmit, watch, formState, reset} = useForm<newCycleFormType>({
+        const { register, handleSubmit, watch, reset} = useForm<newCycleFormType>({
             resolver: zodResolver(newCycleFormValidation),
             defaultValues: {
                 task: "",
@@ -38,7 +40,7 @@
         
        
 
-        console.log(formState.errors)
+        
 
         const isActiveCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
@@ -52,8 +54,6 @@
         const minutes = String(minutesAmount).padStart(2, "0");
         const seconds = String(secondsAmount).padStart(2, "0");
 
-
-        console.log(minutesAmount, secondsAmount)
 
         function handleCreateNewCycle(data: newCycleFormType){
             const id = String(new Date().getTime());
@@ -73,25 +73,61 @@
             reset();
         }
 
+        function handleInterruptCycle(){
+
+            setCycles((prevState) => prevState.map(cycle => {
+                if(cycle.id === activeCycleId){
+                    return { ...cycle, interruptDate: new Date() }
+                } else {
+                    return cycle;
+                }
+            }))
+
+            setActiveCycleId(null);
+
+        }
+
 
         const task = watch("task");
 
         const isSubmitDisabled = !task;
 
         useEffect(() => {
-            let interval: number;
-            if(isActiveCycle){
+            let interval: number | undefined;
+        
+            if (isActiveCycle) {
                 interval = setInterval(() => {
-                    setAmountSecondsPassed(differenceInSeconds(new Date(), isActiveCycle.startDate));
-                    console.log(amountSecondsPassed)
-                }, 1000)
+                    const secondsDifference = differenceInSeconds(new Date(), isActiveCycle.startDate);
+        
+                    if (secondsDifference >= totalInSeconds) {
+                        setCycles((state) =>
+                            state.map((cycle) => {
+                                if (cycle.id === activeCycleId) {
+                                    return { ...cycle, finishedDate: new Date() };
+                                }
+                                return cycle;
+                            })
+                        );
+                        setAmountSecondsPassed(totalInSeconds);
+                        clearInterval(interval);
+                    } else {
+                        setAmountSecondsPassed(secondsDifference); 
+                    }
+                }, 1000);
             }
-
+        
             return () => {
-                clearInterval(interval)
-            }
+                clearInterval(interval); 
+            };
+        }, [isActiveCycle, totalInSeconds, activeCycleId]);
 
-        }, [isActiveCycle]);
+        useEffect(() => {
+            if(isActiveCycle){
+                document.title = `${minutes}:${seconds}`;
+            } else {
+                document.title = "Ignite Timer"
+            }
+        }, [minutes, seconds, isActiveCycle])
 
         return(
             <HomeContainer>
@@ -100,7 +136,9 @@
 
                 <label htmlFor="task">Vou trabalhar em</label>
                 <TaskInput type="text" placeholder="Dê um nome para o seu projeto" list="task-suggestions"
-                {...register("task")}/>
+                {...register("task")}
+                disabled={!!isActiveCycle}
+                />
 
             
                 <datalist id="task-suggestions">
@@ -111,7 +149,9 @@
 
                 <label htmlFor="minutesAmount">durante</label>
                 <MinutesAmountInput type="number" id="minutesAmount" placeholder="00" step={5} min={5} max={60} 
-                {...register("minutesAmount", {valueAsNumber: true})}/>
+                {...register("minutesAmount", {valueAsNumber: true})}
+                disabled={!!isActiveCycle}
+                />
 
                 <span>minutos.</span>
                 
@@ -125,10 +165,21 @@
                     <span>{seconds[1]}</span>
                 </CountDownContainer>
 
-                <StartCountdownButton type="submit"  disabled={isSubmitDisabled}>
-                <Play size={24}/>
-                Começar
-                </StartCountdownButton>
+                {
+                    isActiveCycle ? (
+                        <div>
+                        <InterruptCountdownButton type="button" onClick={handleInterruptCycle}>
+                        <HandPalm size={24}/>
+                        Interromper
+                        </InterruptCountdownButton>
+                        </div>
+                    ) : (
+                        <StartCountdownButton type="submit"  disabled={isSubmitDisabled}>
+                        <Play size={24}/>
+                        Começar
+                        </StartCountdownButton>
+                    )
+                }
             </form>
             </HomeContainer>
         )
