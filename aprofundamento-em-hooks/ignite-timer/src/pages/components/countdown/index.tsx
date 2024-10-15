@@ -8,7 +8,6 @@
 
         const { activeCycleId, isActiveCycle, amountSecondsPassed, markCurrentCycleAsFinished, setSecondsPassed } = useContext(CyclesContext);
         
-       
         const totalInSeconds = isActiveCycle ? isActiveCycle.minutesAmount * 60: 0;
 
         const currentSeconds = isActiveCycle ? totalInSeconds - amountSecondsPassed: 0;
