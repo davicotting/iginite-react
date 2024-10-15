@@ -1,13 +1,5 @@
-import { createContext, ReactNode, useState } from "react";
-
-interface Cycle {
-    id: string;
-    task: string;
-    minutesAmount: number;
-    startDate: Date;
-    interruptDate?: Date;
-    finishedDate?: Date;
-}
+import { createContext, ReactNode, useReducer, useState } from "react";
+import { Cycle, cyclesReducer, ReduceTypes } from "../reducers/Cycles";
 
 interface CyclesContextType {
     isActiveCycle: Cycle | undefined;
@@ -32,23 +24,26 @@ interface CyclesContextProviderProps {
 }
 
 export function CyclesContextProvider({children}: CyclesContextProviderProps){
-    
 
-const [cycles, setCycles] = useState<Cycle[]>([]);
-const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
+const [cyclesState, dispach] = useReducer(cyclesReducer, {
+    cycles: [],
+    activeCycleId: null
+})
+
+const { cycles, activeCycleId } = cyclesState;
+
 const [amountSecondsPassed, setAmountSecondsPassed] = useState(0);
 
 const isActiveCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
 function markCurrentCycleAsFinished(){
-    setCycles((state) =>
-        state.map((cycle) => {
-            if (cycle.id === activeCycleId) {
-                return { ...cycle, finishedDate: new Date() };
-            }
-            return cycle;
-        })
-    );
+
+    dispach({
+        type: ReduceTypes.MARK_CURRENT_CYCLE_AS_FINISHED,
+        payload: isActiveCycle,
+    })
+
+    
 }
 
 function setSecondsPassed(seconds: number){
@@ -58,6 +53,7 @@ function setSecondsPassed(seconds: number){
 function createNewCycle(data: CreateNewCycleType){
     const id = String(new Date().getTime());
 
+
     const newCycle: Cycle = {
         id,
         task: data.task,
@@ -65,8 +61,15 @@ function createNewCycle(data: CreateNewCycleType){
         startDate: new Date(),
     }
 
-    setCycles((prevState) => [...prevState, newCycle]);
-    setActiveCycleId(id);
+    dispach({
+        type: ReduceTypes.ADD_NEW_CYCLE,
+        payload: {
+            newCycle,
+        }
+    })
+
+    
+    
     setSecondsPassed(0)
 
     // reset();
@@ -74,15 +77,10 @@ function createNewCycle(data: CreateNewCycleType){
 
 function interruptNewCycle(){
 
-    setCycles((prevState) => prevState.map(cycle => {
-        if(cycle.id === activeCycleId){
-            return { ...cycle, interruptDate: new Date() }
-        } else {
-            return cycle;
-        }
-    }))
-
-    setActiveCycleId(null);
+    dispach({
+        type: ReduceTypes.INTERRUPT_CURRENT_CYCLE,
+        payload: activeCycleId,
+    })
 
 }
     return(
