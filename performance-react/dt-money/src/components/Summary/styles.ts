@@ -43,7 +43,7 @@ strong {
 
 ${props => props.variant === "green" && css`
 
-    background-color: ${props => props.theme['green-700']};
+    background-color: ${props.theme['green-700']};
 
 `}
 `

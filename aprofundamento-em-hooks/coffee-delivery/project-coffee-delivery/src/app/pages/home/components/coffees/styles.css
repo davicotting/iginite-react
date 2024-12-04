@@ -1,9 +1,0 @@
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  background-color: #6B46C1 !important;
-  color: white !important;
-  border: none !important;
-  width: 24px !important;
-  height: 100% !important;
-}
-

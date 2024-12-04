@@ -1,17 +1,18 @@
-import { ThemeProvider } from 'styled-components';
-import { defaultTheme } from './styles/themes/default';
-import { GlobalStyle } from './styles/global';
-import { Transactions } from './pages/Transations';
+import { ThemeProvider } from "styled-components";
+import { defaultTheme } from "./styles/themes/default";
+import { GlobalStyle } from "./styles/global";
+import { Transactions } from "./pages/Transations";
+import { TransactionsContextProvider } from "./contexts/TransacationsContext.tsx";
 
 export function App() {
-
   return (
     <>
-    <ThemeProvider theme={defaultTheme}>
-      <GlobalStyle />
-      <Transactions/>
-    </ThemeProvider>
+      <ThemeProvider theme={defaultTheme}>
+        <GlobalStyle />
+        <TransactionsContextProvider>
+          <Transactions />
+        </TransactionsContextProvider>
+      </ThemeProvider>
     </>
-  )
+  );
 }
-
