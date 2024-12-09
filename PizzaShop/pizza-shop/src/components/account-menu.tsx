@@ -23,7 +23,7 @@ export function AccountMenu() {
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
             <LogOut className="mr-2 h-4 w-4 dark:text-red-500 text-red-400"/>
-            Perfil da loja
+            Sair da loja
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
