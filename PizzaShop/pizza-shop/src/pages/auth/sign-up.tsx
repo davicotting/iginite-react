@@ -7,9 +7,10 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as zod from "zod";
+import { useMutation } from "react-query";
+import { registerRestaurant } from "@/api/register-restaurant";
 
 export function SignUp() {
-
   const navigate = useNavigate();
 
   const SignUpForm = zod.object({
@@ -27,14 +28,25 @@ export function SignUp() {
     formState: { isSubmitting },
   } = useForm<SignUpFormType>({});
 
+  const { mutateAsync: registerRestaurantFn } = useMutation({
+    mutationFn: registerRestaurant,
+  });
+
   async function handleSignUp(data: SignUpFormType) {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await registerRestaurantFn({
+        email: data.email,
+        phone: data.phone,
+        restaurantName: data.restaurantName,
+        managerName: data.managerName,
+      });
 
       toast.success("Restaurante criado com sucesso!", {
         action: {
           label: "Fazer login",
-          onClick: () => {navigate("/sign-in")},
+          onClick: () => {
+            navigate(`/sign-in?email=${data.email}`);
+          },
         },
       });
     } catch {
@@ -91,7 +103,16 @@ export function SignUp() {
               Finalizar cadastro
             </Button>
 
-            <p className="text-muted-foreground text-center">Ao continuar, você concorda com os nossos <a className="underline underline-offset-4" href="">termos de uso</a> e <a href="" className="underline underline-offset-4">politicas de privacidade.</a></p>
+            <p className="text-muted-foreground text-center">
+              Ao continuar, você concorda com os nossos{" "}
+              <a className="underline underline-offset-4" href="">
+                termos de uso
+              </a>{" "}
+              e{" "}
+              <a href="" className="underline underline-offset-4">
+                politicas de privacidade.
+              </a>
+            </p>
           </form>
         </div>
       </div>

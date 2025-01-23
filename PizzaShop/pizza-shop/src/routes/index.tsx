@@ -5,20 +5,28 @@ import { AppLayout } from "@/pages/_layouts/app";
 import { AuthLayout } from "@/pages/_layouts/auth.";
 import { SignUp } from "@/pages/auth/sign-up";
 import { Orders } from "@/pages/app/orders/orders";
+import { NotFound } from "@/pages/404";
+import { ErrorPage } from "@/pages/error";
 
-export function Router(){
-    return(
-        <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<AppLayout/>}>
-            <Route path="/" element={<Dashboard/>} />
-            <Route path="/orders" element={<Orders/>} />
-            </Route>
-            <Route path="/" element={<AuthLayout/>}>
-            <Route path="/sign-in" element={<SignIn/>} />
-            <Route path="/sign-up" element={<SignUp/>} />
-            </Route>
-        </Routes>
-        </BrowserRouter>
-    )
+export function Router() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AppLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/orders" element={<Orders />} />
+          
+        </Route>
+
+        <Route path="/" element={<AuthLayout />}>
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+        </Route>
+
+        <Route path="*" element={<NotFound/>} />
+        <Route errorElement element={<ErrorPage/>} />
+        
+      </Routes>
+    </BrowserRouter>
+  );
 }

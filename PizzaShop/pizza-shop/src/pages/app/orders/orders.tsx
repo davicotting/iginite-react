@@ -1,5 +1,7 @@
+import { getOrders } from "@/api/get-orders";
 import { OrderTableFilters } from "@/components/order-table-filters";
 import { OrderTableRow } from "@/components/order-table-row";
+import { OrderTableSkeleton } from "@/components/order-table-skeleton";
 import { Pagination } from "@/components/pagination";
 import {
   Table,
@@ -8,19 +10,47 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { useQuery } from "react-query";
+import { useSearchParams } from "react-router-dom";
+import { z } from "zod";
 
 export function Orders() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const orderId = searchParams.get("orderId");
+  const customerName = searchParams.get("customerName");
+  const status = searchParams.get("status");
+
+  const pageIndex = z.coerce
+    .number()
+    .transform((page) => page - 1)
+    .parse(searchParams.get("page") ?? "1");
+
+  const { data: result, isFetching: isLoadingResults } = useQuery({
+    queryKey: ["orders", pageIndex, orderId, customerName, status],
+    queryFn: () =>
+      getOrders({
+        pageIndex,
+        orderId,
+        customerName,
+        status: status === "all" ? null : status,
+      }),
+  });
+
+  function handleChangePage(pageIndex: number) {
+    setSearchParams((prevState) => {
+      prevState.set("page", (pageIndex + 1).toString());
+      return prevState;
+    });
+  }
+
   return (
     <>
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
       </div>
       <div className="space-y-2.5">
-        
-
-      <OrderTableFilters />
-
+        <OrderTableFilters />
 
         <div className="border rounded-md">
           <Table>
@@ -37,13 +67,21 @@ export function Orders() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Array.from({ length: 10 }).map((_, i) => (
-                <OrderTableRow key={i}/>
-              ))}
+              {isLoadingResults && <OrderTableSkeleton />}
+              {result &&
+                result.orders.map((order) => <OrderTableRow order={order} />)}
             </TableBody>
           </Table>
         </div>
-        <Pagination TotalCount={200} pageIndex={0} perPage={20} />
+
+        {result && (
+          <Pagination
+            onPageChange={handleChangePage}
+            TotalCount={result.meta.totalCount}
+            pageIndex={result.meta.pageIndex}
+            perPage={result.meta.perPage}
+          />
+        )}
       </div>
     </>
   );
